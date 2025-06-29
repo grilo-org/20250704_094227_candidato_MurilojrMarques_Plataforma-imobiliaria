@@ -1,12 +1,19 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api',});
+  baseURL: 'http://localhost:8000',
+});
+
+export const getImoveis = () => api.get('/api');
+export const getImovel = (id) => api.get(`/api/${id}`);
+export const createImovel = (data) => api.post('/api', data);
+export const updateImovel = (id, data) => api.put(`/api/${id}`, data);
+export const deleteImovel = (id) => api.delete(`/api/${id}`);
 
 export default {
-    getImoveis: () => api.get(`/`),
-    getImovel: () => api.get(`/${id}`),
-    createImovel: () => api.post(`/`, data),
-    updateImovel: () => api.put(`/${id}`, data),
-    deleteImovel: () => api.delete(`/${id}`),
-}
+  getImoveis,
+  getImovel,
+  createImovel,
+  updateImovel,
+  deleteImovel,
+};

@@ -16,6 +16,7 @@ const ImovelList = () => {
     const fetchImoveis = async () => {
       try {
         const response = await api.getImoveis();
+        console.log('Imóveis recebidos:', response.data);
         setImoveisOriginais(response.data);
         setImoveis(response.data);
         setLoading(false);

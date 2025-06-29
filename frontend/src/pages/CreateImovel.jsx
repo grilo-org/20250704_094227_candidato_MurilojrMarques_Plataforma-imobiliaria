@@ -20,7 +20,14 @@ const CreateImovel = () => {
 
   return (
     <div>
-      <h1>Cadastrar Novo Imóvel</h1>
+      <h1 style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
+        padding: '16px'
+      }}>Cadastrar Novo Imóvel</h1>
       <Alert {...alert} onClose={() => setAlert({ ...alert, open: false })} />
       <ImovelForm onSubmit={handleSubmit} />
     </div>
