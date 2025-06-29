@@ -26,9 +26,14 @@ class ImovelService{
         return $this->repository->create($data);
     }
 
-    public function updateImovel(int $id, array $data): bool
+    public function updateImovel(int $id, array $data): ?Imovel
     {
-        return $this->repository->update($id, $data);
+        $imovel = $this->repository->find($id);
+        if (!$imovel) {
+            return null;
+        }
+        $imovel->update($data);
+        return $imovel;
     }
 
     public function deleteImovel(int $id): bool
