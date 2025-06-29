@@ -33,11 +33,11 @@ const ImovelList = () => {
           throw new Error('Formato de dados não suportado');
         }
 
-        console.log('Dados processados:', imoveisData);
-
         if (!Array.isArray(imoveisData)) {
           throw new Error('Formato de dados inválido: esperado um array');
         }
+
+        console.log('Imóveis carregados:', imoveisData);
 
         setImoveisOriginais(imoveisData);
         setImoveis(imoveisData);
@@ -63,13 +63,28 @@ const ImovelList = () => {
 
   const applyFilters = () => {
     const { finalidade, valorMin, valorMax } = filters;
+    const min = parseFloat(valorMin);
+    const max = parseFloat(valorMax);
 
-    const filteredImoveis = imoveisOriginais.filter((imovel) => {
-      const matchesFinalidade = !finalidade || imovel.finalidade === finalidade;
-      const matchesValorMin = !valorMin || imovel.valor >= parseFloat(valorMin);
-      const matchesValorMax = !valorMax || imovel.valor <= parseFloat(valorMax);
+    console.log('Filtros aplicados:', filters);
+
+    const filteredImoveis = imoveisOriginais.filter(({ valor, finalidade: f }) => {
+      const v = Number(valor);
+
+      const removerAcentos = (str) =>
+        str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+
+      const matchesFinalidade =
+        !finalidade || removerAcentos(f?.toLowerCase()) === removerAcentos(finalidade.toLowerCase())
+
+      const matchesValorMin = !valorMin || v >= min;
+      const matchesValorMax = !valorMax || v <= max;
+
       return matchesFinalidade && matchesValorMin && matchesValorMax;
     });
+
+    console.log('Imóveis após filtro:', filteredImoveis);
 
     setImoveis(filteredImoveis);
   };
@@ -204,15 +219,13 @@ const ImovelList = () => {
         <button
           onClick={applyFilters}
           style={styles.button}
-          disabled={loading}
         >
-          {loading ? 'Filtrando...' : 'Filtrar'}
+          Filtrar
         </button>
 
         <button
           onClick={clearFilters}
           style={styles.clearButton}
-          disabled={loading}
         >
           Limpar
         </button>
