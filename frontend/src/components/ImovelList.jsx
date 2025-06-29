@@ -19,9 +19,9 @@ const ImovelList = () => {
         setLoading(true);
         setError(null);
         const response = await api.getImoveis();
-    
+
         let imoveisData = [];
-        
+
         if (Array.isArray(response)) {
           imoveisData = response;
         } else if (Array.isArray(response?.data)) {
@@ -34,7 +34,7 @@ const ImovelList = () => {
         }
 
         console.log('Dados processados:', imoveisData);
-        
+
         if (!Array.isArray(imoveisData)) {
           throw new Error('Formato de dados inválido: esperado um array');
         }
@@ -55,6 +55,10 @@ const ImovelList = () => {
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleDeleteSuccess = (id) => {
+    setImoveis(imoveis.filter(imovel => imovel.id !== id));
   };
 
   const applyFilters = () => {
@@ -197,16 +201,16 @@ const ImovelList = () => {
           min="0"
         />
 
-        <button 
-          onClick={applyFilters} 
+        <button
+          onClick={applyFilters}
           style={styles.button}
           disabled={loading}
         >
           {loading ? 'Filtrando...' : 'Filtrar'}
         </button>
 
-        <button 
-          onClick={clearFilters} 
+        <button
+          onClick={clearFilters}
           style={styles.clearButton}
           disabled={loading}
         >
@@ -231,10 +235,11 @@ const ImovelList = () => {
       ) : (
         <div style={styles.grid}>
           {imoveis.map((imovel) => (
-            <ImovelCard 
-              key={imovel.id} 
-              imovel={imovel} 
+            <ImovelCard
+              key={imovel.id}
+              imovel={imovel}
               style={{ height: '100%' }}
+              onDeleteSuccess={handleDeleteSuccess}
             />
           ))}
         </div>

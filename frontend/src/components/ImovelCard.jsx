@@ -1,6 +1,22 @@
 import React from 'react';
+import axios from 'axios';
 
-const ImovelCard = ({ imovel, onEdit, onDelete }) => {
+const ImovelCard = ({ imovel, style, onDeleteSuccess }) => {
+  const [hoveredButton, setHoveredButton] = React.useState(null);
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm('Tem certeza que deseja excluir este imóvel? Esta ação não pode ser desfeita.');
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(`http://localhost:8000/api/${imovel.id}`);
+      if (onDeleteSuccess) onDeleteSuccess(imovel.id);
+    } catch (error) {
+      console.error('Erro ao excluir imóvel:', error);
+      alert('Ocorreu um erro ao excluir o imóvel.');
+    }
+  };
+
   const styles = {
     card: {
       border: '1px solid #e0e0e0',
@@ -14,6 +30,7 @@ const ImovelCard = ({ imovel, onEdit, onDelete }) => {
       height: '100%',
       minHeight: '380px',
       transition: 'box-shadow 0.3s ease',
+      ...style,
     },
     title: {
       fontSize: '18px',
@@ -107,8 +124,6 @@ const ImovelCard = ({ imovel, onEdit, onDelete }) => {
     }
   };
 
-  const [hoveredButton, setHoveredButton] = React.useState(null);
-
   return (
     <div style={styles.card}>
       <div style={styles.title}>{imovel.titulo}</div>
@@ -161,7 +176,6 @@ const ImovelCard = ({ imovel, onEdit, onDelete }) => {
               color: '#fff'
             }),
           }}
-          onClick={() => onEdit && onEdit(imovel)}
           onMouseEnter={() => setHoveredButton('edit')}
           onMouseLeave={() => setHoveredButton(null)}
           type="button"
@@ -178,7 +192,7 @@ const ImovelCard = ({ imovel, onEdit, onDelete }) => {
               color: '#fff'
             }),
           }}
-          onClick={() => onDelete && onDelete(imovel.id)}
+          onClick={handleDelete}
           onMouseEnter={() => setHoveredButton('delete')}
           onMouseLeave={() => setHoveredButton(null)}
           type="button"

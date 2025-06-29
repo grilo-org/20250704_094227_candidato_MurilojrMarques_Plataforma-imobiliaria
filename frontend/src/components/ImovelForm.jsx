@@ -74,6 +74,7 @@ const ImovelForm = ({ imovel = {}, onSubmitSuccess, onCancel }) => {
             border: '1px solid #ccc',
             minHeight: '100px',
             resize: 'vertical',
+            fontFamily: 'inherit',
         },
         select: {
             display: 'block',
