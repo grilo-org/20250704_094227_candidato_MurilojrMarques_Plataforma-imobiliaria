@@ -4,10 +4,11 @@ namespace App\Repositories;
 
 use App\Interfaces\ImovelRepositoryInterface;
 use App\Models\Imovel;
+use Illuminate\Database\Eloquent\Collection;
 
 class ImovelRepository implements ImovelRepositoryInterface
 {
-    public function all(array $filters = []): array
+    public function all(array $filters = []): Collection
     {
         $query = Imovel::query();
         
@@ -23,7 +24,7 @@ class ImovelRepository implements ImovelRepositoryInterface
             $query->where('valor', '<=', $filters['valor_max']);
         }
         
-        return $query->get()->toArray();
+        return $query->get();
     }
 
     public function find(int $id): ?Imovel

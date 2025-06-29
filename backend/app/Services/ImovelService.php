@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Interfaces\ImovelRepositoryInterface;
 use App\Models\Imovel;
+use Illuminate\Database\Eloquent\Collection;
 
 class ImovelService{
     public function __construct(private ImovelRepositoryInterface $repository)
@@ -11,7 +12,7 @@ class ImovelService{
         
     }
 
-    public function getAllImoveis(array $filters = []): array
+    public function getAllImoveis(array $filters = []): Collection
     {
         return $this->repository->all($filters);
     }
