@@ -3,25 +3,32 @@ import React from 'react';
 const ImovelCard = ({ imovel, onEdit, onDelete }) => {
   const styles = {
     card: {
-      border: '1px solid #ccc',
+      border: '1px solid #e0e0e0',
       borderRadius: '8px',
-      padding: '16px',
+      padding: '20px',
       marginBottom: '16px',
-      boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
       backgroundColor: '#fff',
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+      minHeight: '380px',
+      transition: 'box-shadow 0.3s ease',
     },
     title: {
-      fontSize: '20px',
+      fontSize: '18px',
       fontWeight: '600',
       marginBottom: '8px',
+      color: '#222',
     },
     endereco: {
       color: '#666',
       marginBottom: '12px',
+      fontSize: '14px',
     },
     chip: {
       display: 'inline-block',
-      padding: '4px 10px',
+      padding: '4px 12px',
       borderRadius: '16px',
       fontSize: '12px',
       fontWeight: '600',
@@ -32,58 +39,74 @@ const ImovelCard = ({ imovel, onEdit, onDelete }) => {
     row: {
       display: 'flex',
       alignItems: 'center',
-      marginTop: '8px',
-      marginBottom: '12px',
+      margin: '8px 0',
       gap: '12px',
       flexWrap: 'wrap',
     },
-    iconText: {
+    detailItem: {
       display: 'flex',
       alignItems: 'center',
       fontSize: '14px',
-      color: '#333',
+      color: '#555',
     },
-    iconEmoji: {
-      marginRight: '4px',
-      fontSize: '16px',
-      userSelect: 'none',
+    detailIcon: {
+      marginRight: '6px',
+      color: '#1976d2',
+      fontSize: '14px',
     },
     descricao: {
-      marginBottom: '12px',
+      margin: '12px 0',
       fontSize: '14px',
       color: '#444',
+      flexGrow: 1,
+      lineHeight: '1.5',
     },
     corretor: {
-      fontSize: '12px',
-      color: '#999',
+      fontSize: '13px',
+      color: '#777',
       marginBottom: '12px',
     },
     buttonsContainer: {
       display: 'flex',
-      gap: '8px',
+      gap: '10px',
+      marginTop: 'auto',
     },
     button: {
-      padding: '6px 12px',
+      padding: '8px 16px',
       fontSize: '14px',
       borderRadius: '4px',
       border: '1px solid #1976d2',
       backgroundColor: '#fff',
       color: '#1976d2',
       cursor: 'pointer',
-      userSelect: 'none',
-      transition: 'background-color 0.3s',
+      transition: 'all 0.2s ease',
+      flex: 1,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     buttonDelete: {
       border: '1px solid #d32f2f',
       color: '#d32f2f',
     },
-    buttonHover: {
-      backgroundColor: '#1976d2',
-      color: '#fff',
+    valor: {
+      fontSize: '16px',
+      fontWeight: '600',
+      color: '#2e7d32',
     },
+    divider: {
+      height: '1px',
+      backgroundColor: '#f0f0f0',
+      margin: '12px 0',
+    },
+    sectionTitle: {
+      fontSize: '15px',
+      fontWeight: '500',
+      color: '#333',
+      margin: '8px 0 4px 0',
+    }
   };
 
-  // Para simular hover inline, vamos usar estado local:
   const [hoveredButton, setHoveredButton] = React.useState(null);
 
   return (
@@ -91,13 +114,13 @@ const ImovelCard = ({ imovel, onEdit, onDelete }) => {
       <div style={styles.title}>{imovel.titulo}</div>
       <div style={styles.endereco}>{imovel.endereco}</div>
 
+      <div style={styles.divider} />
+
       <div style={styles.row}>
         <span style={styles.chip}>
           {imovel.finalidade.toLowerCase() === 'venda' ? 'Venda' : 'Locação'}
         </span>
-
-        <div style={styles.iconText}>
-          <span style={styles.iconEmoji}>💰</span>
+        <div style={styles.valor}>
           {new Intl.NumberFormat('pt-BR', {
             style: 'currency',
             currency: 'BRL',
@@ -106,31 +129,37 @@ const ImovelCard = ({ imovel, onEdit, onDelete }) => {
       </div>
 
       <div style={styles.row}>
-        <div style={styles.iconText}>
-          <span style={styles.iconEmoji}>🛏️</span>
-          {imovel.quartos}
+        <div style={styles.detailItem}>
+          <span style={styles.detailIcon}>•</span>
+          {imovel.quartos} {imovel.quartos === 1 ? 'Quarto' : 'Quartos'}
         </div>
-        <div style={styles.iconText}>
-          <span style={styles.iconEmoji}>🛁</span>
-          {imovel.banheiros}
+        <div style={styles.detailItem}>
+          <span style={styles.detailIcon}>•</span>
+          {imovel.banheiros} {imovel.banheiros === 1 ? 'Banheiro' : 'Banheiros'}
         </div>
         {imovel.garagem && (
-          <div style={styles.iconText}>
-            <span style={styles.iconEmoji}>🚗</span>
+          <div style={styles.detailItem}>
+            <span style={styles.detailIcon}>•</span>
             Garagem
           </div>
         )}
       </div>
 
-      <div style={styles.descricao}>{imovel.descricao}</div>
+      <div style={styles.sectionTitle}>Descrição</div>
+      <div style={styles.descricao}>
+        {imovel.descricao || 'Nenhuma descrição fornecida.'}
+      </div>
 
-      <div style={styles.corretor}>Corretor: {imovel.corretor}</div>
+      <div style={styles.corretor}>Responsável: {imovel.corretor}</div>
 
       <div style={styles.buttonsContainer}>
         <button
           style={{
             ...styles.button,
-            ...(hoveredButton === 'edit' ? styles.buttonHover : {}),
+            ...(hoveredButton === 'edit' && {
+              backgroundColor: '#1976d2',
+              color: '#fff'
+            }),
           }}
           onClick={() => onEdit && onEdit(imovel)}
           onMouseEnter={() => setHoveredButton('edit')}
@@ -144,7 +173,10 @@ const ImovelCard = ({ imovel, onEdit, onDelete }) => {
           style={{
             ...styles.button,
             ...styles.buttonDelete,
-            ...(hoveredButton === 'delete' ? { backgroundColor: '#d32f2f', color: '#fff' } : {}),
+            ...(hoveredButton === 'delete' && {
+              backgroundColor: '#d32f2f',
+              color: '#fff'
+            }),
           }}
           onClick={() => onDelete && onDelete(imovel.id)}
           onMouseEnter={() => setHoveredButton('delete')}

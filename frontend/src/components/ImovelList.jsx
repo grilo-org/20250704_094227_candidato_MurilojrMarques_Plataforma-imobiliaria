@@ -3,9 +3,10 @@ import api from '../services/api';
 import ImovelCard from './ImovelCard';
 
 const ImovelList = () => {
-  const [imoveisOriginais, setImoveisOriginais] = useState([]); 
-  const [imoveis, setImoveis] = useState([]);                  
+  const [imoveisOriginais, setImoveisOriginais] = useState([]);
+  const [imoveis, setImoveis] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [filters, setFilters] = useState({
     finalidade: '',
     valorMin: '',
@@ -15,13 +16,35 @@ const ImovelList = () => {
   useEffect(() => {
     const fetchImoveis = async () => {
       try {
+        setLoading(true);
+        setError(null);
         const response = await api.getImoveis();
-        console.log('Imóveis recebidos:', response.data);
-        setImoveisOriginais(response.data);
-        setImoveis(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Erro ao buscar imóveis:', error);
+    
+        let imoveisData = [];
+        
+        if (Array.isArray(response)) {
+          imoveisData = response;
+        } else if (Array.isArray(response?.data)) {
+          imoveisData = response.data;
+        } else if (Array.isArray(response?.data?.data)) {
+          imoveisData = response.data.data;
+        } else {
+          console.error('Estrutura de dados não reconhecida:', response);
+          throw new Error('Formato de dados não suportado');
+        }
+
+        console.log('Dados processados:', imoveisData);
+        
+        if (!Array.isArray(imoveisData)) {
+          throw new Error('Formato de dados inválido: esperado um array');
+        }
+
+        setImoveisOriginais(imoveisData);
+        setImoveis(imoveisData);
+      } catch (err) {
+        console.error('Erro ao buscar imóveis:', err);
+        setError(`Erro ao carregar imóveis: ${err.message}`);
+      } finally {
         setLoading(false);
       }
     };
@@ -62,66 +85,85 @@ const ImovelList = () => {
       fontSize: '28px',
       fontWeight: 'bold',
       marginBottom: '20px',
+      color: '#2c3e50',
     },
     filters: {
       display: 'flex',
       flexWrap: 'wrap',
-      gap: '10px',
+      gap: '15px',
       marginBottom: '30px',
+      alignItems: 'center',
     },
     input: {
-      padding: '10px',
-      border: '1px solid #ccc',
-      borderRadius: '4px',
+      padding: '10px 15px',
+      border: '1px solid #ddd',
+      borderRadius: '6px',
       width: '100%',
       minWidth: '200px',
       fontSize: '16px',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
     },
     button: {
       padding: '10px 20px',
-      backgroundColor: '#007bff',
+      backgroundColor: '#3498db',
       color: '#fff',
       border: 'none',
-      borderRadius: '4px',
+      borderRadius: '6px',
       cursor: 'pointer',
       fontSize: '16px',
+      fontWeight: 'bold',
+      transition: 'background-color 0.3s',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
     },
     clearButton: {
       padding: '10px 20px',
-      backgroundColor: '#6c757d',
+      backgroundColor: '#95a5a6',
       color: '#fff',
       border: 'none',
-      borderRadius: '4px',
+      borderRadius: '6px',
       cursor: 'pointer',
       fontSize: '16px',
+      fontWeight: 'bold',
+      transition: 'background-color 0.3s',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
     },
     grid: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      gap: '20px',
-    },
-    cardWrapper: {
-      flex: '1 1 calc(33.333% - 20px)',
-      boxSizing: 'border-box',
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+      gap: '25px',
     },
     loadingText: {
-      fontSize: '18px',
+      fontSize: '20px',
       textAlign: 'center',
       marginTop: '50px',
+      color: '#7f8c8d',
     },
     noResultsText: {
-      fontSize: '18px',
+      fontSize: '20px',
       textAlign: 'center',
       marginTop: '50px',
-      color: '#666',
+      color: '#95a5a6',
+      padding: '20px',
+      backgroundColor: '#f5f5f5',
+      borderRadius: '8px',
+    },
+    errorText: {
+      fontSize: '20px',
+      textAlign: 'center',
+      marginTop: '50px',
+      color: '#e74c3c',
+      padding: '20px',
+      backgroundColor: '#fde8e8',
+      borderRadius: '8px',
     },
   };
 
-  if (loading) return <div style={styles.loadingText}>Carregando...</div>;
+  if (loading) return <div style={styles.loadingText}>Carregando imóveis...</div>;
+  if (error) return <div style={styles.errorText}>{error}</div>;
 
   return (
     <div style={styles.container}>
-      <div style={styles.title}>Lista de Imóveis</div>
+      <h1 style={styles.title}>Lista de Imóveis</h1>
 
       <div style={styles.filters}>
         <select
@@ -155,23 +197,45 @@ const ImovelList = () => {
           min="0"
         />
 
-        <button onClick={applyFilters} style={styles.button}>
-          Filtrar
+        <button 
+          onClick={applyFilters} 
+          style={styles.button}
+          disabled={loading}
+        >
+          {loading ? 'Filtrando...' : 'Filtrar'}
         </button>
 
-        <button onClick={clearFilters} style={styles.clearButton}>
+        <button 
+          onClick={clearFilters} 
+          style={styles.clearButton}
+          disabled={loading}
+        >
           Limpar
         </button>
       </div>
 
-      {imoveis.length === 0 ? (
-        <div style={styles.noResultsText}>Nenhum imóvel encontrado.</div>
+      {!Array.isArray(imoveis) ? (
+        <div style={styles.errorText}>
+          Erro: Os dados recebidos não estão no formato esperado.
+          <div style={{ fontSize: '14px', marginTop: '10px' }}>
+            Por favor, verifique a estrutura da API.
+          </div>
+        </div>
+      ) : imoveis.length === 0 ? (
+        <div style={styles.noResultsText}>
+          Nenhum imóvel encontrado com os critérios atuais.
+          <div style={{ fontSize: '14px', marginTop: '10px' }}>
+            Tente ajustar os filtros ou verifique a conexão com o servidor.
+          </div>
+        </div>
       ) : (
         <div style={styles.grid}>
           {imoveis.map((imovel) => (
-            <div key={imovel.id} style={styles.cardWrapper}>
-              <ImovelCard imovel={imovel} />
-            </div>
+            <ImovelCard 
+              key={imovel.id} 
+              imovel={imovel} 
+              style={{ height: '100%' }}
+            />
           ))}
         </div>
       )}
