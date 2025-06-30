@@ -1,0 +1,349 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de Imóveis",
+        "description": "Documentação da API para gerenciamento de imóveis",
+        "contact": {
+            "name": "Equipe de Desenvolvimento",
+            "email": "suporte@empresa.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api",
+            "description": "Servidor API Local"
+        },
+        {
+            "url": "http://localhost:8000/api",
+            "description": "Servidor de Desenvolvimento"
+        }
+    ],
+    "paths": {
+        "/api/imoveis": {
+            "get": {
+                "tags": [
+                    "Imóveis"
+                ],
+                "summary": "Listar todos os imóveis",
+                "description": "Retorna uma lista de imóveis com possibilidade de filtro",
+                "operationId": "750e9012ba70fabf18e9bf0ef2b6c9e7",
+                "parameters": [
+                    {
+                        "name": "finalidade",
+                        "in": "query",
+                        "description": "Filtrar por finalidade (venda ou locacao)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "valor_min",
+                        "in": "query",
+                        "description": "Valor mínimo do imóvel",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "valor_max",
+                        "in": "query",
+                        "description": "Valor máximo do imóvel",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem sucedida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Imovel"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Imóveis"
+                ],
+                "summary": "Cadastrar novo imóvel",
+                "description": "Cria um novo registro de imóvel",
+                "operationId": "06339c3c9136f2e9018d13ed765a79e2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ImovelRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Imóvel criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Imovel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação"
+                    }
+                }
+            }
+        },
+        "/api/imoveis/{id}": {
+            "get": {
+                "tags": [
+                    "Imóveis"
+                ],
+                "summary": "Visualizar imóvel específico",
+                "description": "Retorna os dados de um imóvel específico",
+                "operationId": "237c152ea3d070734c2468c5c923dd44",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do imóvel",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem sucedida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Imovel"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Imóvel não encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Imóveis"
+                ],
+                "summary": "Atualizar imóvel",
+                "description": "Atualiza os dados de um imóvel existente",
+                "operationId": "dea5b1f7ed518a4d33c4f5fad1f9e0a9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do imóvel",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ImovelRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Imóvel atualizado com sucesso"
+                    },
+                    "404": {
+                        "description": "Imóvel não encontrado"
+                    },
+                    "422": {
+                        "description": "Erro de validação"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Imóveis"
+                ],
+                "summary": "Excluir imóvel",
+                "description": "Remove um imóvel do sistema",
+                "operationId": "bf2607326967e6d4a415d444f53036be",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do imóvel",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Imóvel excluído com sucesso"
+                    },
+                    "404": {
+                        "description": "Imóvel não encontrado"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Imovel": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "titulo": {
+                        "type": "string",
+                        "example": "Casa com Piscina"
+                    },
+                    "descricao": {
+                        "type": "string",
+                        "example": "Excelente casa com 3 quartos e piscina"
+                    },
+                    "endereco": {
+                        "type": "string",
+                        "example": "Rua das Flores, 123 - Jardim Primavera"
+                    },
+                    "finalidade": {
+                        "type": "string",
+                        "enum": [
+                            "venda",
+                            "locacao"
+                        ],
+                        "example": "venda"
+                    },
+                    "valor": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 750000.5
+                    },
+                    "quartos": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "banheiros": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "garagem": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "corretor": {
+                        "type": "string",
+                        "example": "Carlos Silva"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "ImovelRequest": {
+                "required": [
+                    "titulo",
+                    "descricao",
+                    "endereco",
+                    "finalidade",
+                    "valor",
+                    "quartos",
+                    "banheiros",
+                    "corretor"
+                ],
+                "properties": {
+                    "titulo": {
+                        "type": "string",
+                        "example": "Casa com Piscina"
+                    },
+                    "descricao": {
+                        "type": "string",
+                        "example": "Excelente casa com 3 quartos e piscina"
+                    },
+                    "endereco": {
+                        "type": "string",
+                        "example": "Rua das Flores, 123 - Jardim Primavera"
+                    },
+                    "finalidade": {
+                        "type": "string",
+                        "enum": [
+                            "venda",
+                            "locacao"
+                        ],
+                        "example": "venda"
+                    },
+                    "valor": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 750000.5
+                    },
+                    "quartos": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "banheiros": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "garagem": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "corretor": {
+                        "type": "string",
+                        "example": "Carlos Silva"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Imóveis",
+            "description": "Operações relacionadas a imóveis"
+        }
+    ]
+}
