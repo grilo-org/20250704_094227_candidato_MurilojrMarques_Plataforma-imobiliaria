@@ -66,8 +66,6 @@ const ImovelList = () => {
     const min = parseFloat(valorMin);
     const max = parseFloat(valorMax);
 
-    console.log('Filtros aplicados:', filters);
-
     const filteredImoveis = imoveisOriginais.filter(({ valor, finalidade: f }) => {
       const v = Number(valor);
 

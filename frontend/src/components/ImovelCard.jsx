@@ -1,20 +1,27 @@
 import React from 'react';
-import axios from 'axios';
+import api from '../services/api';
+import ImovelForm from './ImovelForm'; 
 
-const ImovelCard = ({ imovel, style, onDeleteSuccess }) => {
+const ImovelCard = ({ imovel, style, onDeleteSuccess, onUpdateSuccess }) => {
   const [hoveredButton, setHoveredButton] = React.useState(null);
+  const [isEditing, setIsEditing] = React.useState(false);
 
   const handleDelete = async () => {
-    const confirmDelete = window.confirm('Tem certeza que deseja excluir este imóvel? Esta ação não pode ser desfeita.');
-    if (!confirmDelete) return;
+  const confirmDelete = window.confirm('Tem certeza que deseja excluir este imóvel? Esta ação não pode ser desfeita.');
+  if (!confirmDelete) return;
 
-    try {
-      await axios.delete(`http://localhost:8000/api/${imovel.id}`);
-      if (onDeleteSuccess) onDeleteSuccess(imovel.id);
-    } catch (error) {
-      console.error('Erro ao excluir imóvel:', error);
-      alert('Ocorreu um erro ao excluir o imóvel.');
-    }
+  try {
+    await api.deleteImovel(imovel.id);
+    if (onDeleteSuccess) onDeleteSuccess(imovel.id);
+  } catch (error) {
+    console.error('Erro ao excluir imóvel:', error);
+    alert('Ocorreu um erro ao excluir o imóvel.');
+  }
+};
+
+  const handleUpdateSuccess = (updatedImovel) => {
+    setIsEditing(false);
+    if (onUpdateSuccess) onUpdateSuccess(updatedImovel);
   };
 
   const styles = {
@@ -124,6 +131,18 @@ const ImovelCard = ({ imovel, style, onDeleteSuccess }) => {
     }
   };
 
+  if (isEditing) {
+    return (
+      <div style={{ ...styles.card, padding: '20px' }}>
+        <ImovelForm 
+          imovel={imovel} 
+          onSubmitSuccess={handleUpdateSuccess}
+          onCancel={() => setIsEditing(false)}
+        />
+      </div>
+    );
+  }
+
   return (
     <div style={styles.card}>
       <div style={styles.title}>{imovel.titulo}</div>
@@ -178,6 +197,7 @@ const ImovelCard = ({ imovel, style, onDeleteSuccess }) => {
           }}
           onMouseEnter={() => setHoveredButton('edit')}
           onMouseLeave={() => setHoveredButton(null)}
+          onClick={() => setIsEditing(true)}
           type="button"
         >
           Editar
