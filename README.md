@@ -61,6 +61,7 @@ composer install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate
+php artisan db:seed(opcional para ter dados para teste)
 php artisan serve
 Configure as variáveis do .env com suas credenciais de banco 
 
