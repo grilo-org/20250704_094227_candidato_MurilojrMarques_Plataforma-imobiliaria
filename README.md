@@ -27,11 +27,11 @@ Desenvolver um CRUD (Create, Read, Update, Delete) completo com API RESTful e in
 
 | Método | Rota               | Descrição                      |
 |--------|--------------------|-------------------------------|
-| POST   | /api/imoveis       | Cadastrar novo imóvel         |
-| GET    | /api/imoveis       | Listar todos os imóveis       |
-| GET    | /api/imoveis/{id}  | Detalhes de um imóvel         |
-| PUT    | /api/imoveis/{id}  | Atualizar imóvel existente    |
-| DELETE | /api/imoveis/{id}  | Deletar imóvel                |
+| POST   | /api/      | Cadastrar novo imóvel         |
+| GET    | /api      | Listar todos os imóveis       |
+| GET    | /api/{id}  | Detalhes de um imóvel         |
+| PUT    | /api/{id}  | Atualizar imóvel existente    |
+| DELETE | /api/{id}  | Deletar imóvel                |
 
 ---
 
