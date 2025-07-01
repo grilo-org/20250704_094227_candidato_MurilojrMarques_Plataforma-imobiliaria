@@ -10,13 +10,9 @@ use Illuminate\Routing\Controller;
  *     version="1.0.0",
  *     description="Documentação da API para gerenciamento de imóveis",
  *     @OA\Contact(
- *         email="suporte@empresa.com",
- *         name="Equipe de Desenvolvimento"
+ *         email="muriloj2702@gmail.com",
+ *         name="Murilo Junior Marques"
  *     ),
- *     @OA\License(
- *         name="MIT",
- *         url="https://opensource.org/licenses/MIT"
- *     )
  * )
  * 
  * @OA\Server(
@@ -33,7 +29,7 @@ class ImovelControllerSwagger extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/api/imoveis",
+     *     path="/api",
      *     tags={"Imóveis"},
      *     summary="Listar todos os imóveis",
      *     description="Retorna uma lista de imóveis com possibilidade de filtro",
@@ -72,7 +68,7 @@ class ImovelControllerSwagger extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/imoveis",
+     *     path="/api/",
      *     tags={"Imóveis"},
      *     summary="Cadastrar novo imóvel",
      *     description="Cria um novo registro de imóvel",
@@ -95,7 +91,7 @@ class ImovelControllerSwagger extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/imoveis/{id}",
+     *     path="/api/{id}",
      *     tags={"Imóveis"},
      *     summary="Visualizar imóvel específico",
      *     description="Retorna os dados de um imóvel específico",
@@ -121,7 +117,7 @@ class ImovelControllerSwagger extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/imoveis/{id}",
+     *     path="/api/{id}",
      *     tags={"Imóveis"},
      *     summary="Atualizar imóvel",
      *     description="Atualiza os dados de um imóvel existente",
@@ -154,7 +150,7 @@ class ImovelControllerSwagger extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/imoveis/{id}",
+     *     path="/api/{id}",
      *     tags={"Imóveis"},
      *     summary="Excluir imóvel",
      *     description="Remove um imóvel do sistema",
